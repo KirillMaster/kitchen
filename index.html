@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ужин: ларб + рис • маринад бёдер</title>
+<style>
+:root{--bg:#faf7f2;--card:#fff;--ink:#1d1b18;--mute:#6b645a;--line:#e7e0d4;--acc:#d9480f;--acc2:#2b8a3e;--warn:#c92a2a;--chip:#fff4e6;--chipink:#7a3e00;--ok:#ebfbee}
+@media (prefers-color-scheme:dark){:root{--bg:#141210;--card:#1e1b18;--ink:#f1ece4;--mute:#a59d90;--line:#332e28;--acc:#ff8a4c;--acc2:#69db7c;--warn:#ff6b6b;--chip:#2f2217;--chipink:#ffc58f;--ok:#1b2a1e}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 -apple-system,system-ui,Segoe UI,Roboto,sans-serif}
+.wrap{max-width:680px;margin:0 auto;padding:16px 14px 120px}
+h1{font-size:24px;margin:8px 0 4px}
+.sub{color:var(--mute);margin:0 0 14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin:14px 0}
+.card.done{opacity:.55}
+.hd{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.num{flex:0 0 36px;height:36px;border-radius:50%;background:var(--acc);color:#fff;display:grid;place-items:center;font-weight:700}
+.hd h2{font-size:19px;margin:0;flex:1}
+.time{font-size:13px;color:var(--mute);white-space:nowrap}
+table{width:100%;border-collapse:collapse;font-size:15px}
+td,th{padding:7px 6px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{color:var(--mute);font-weight:600;font-size:13px}
+.take{background:var(--chip);color:var(--chipink);border-radius:12px;padding:10px 12px;margin:8px 0 12px;font-size:15px}
+.take b{display:block;margin-bottom:4px}
+.take ul{margin:0;padding-left:18px}
+ol.steps{padding-left:0;list-style:none;margin:0;counter-reset:s}
+ol.steps>li{counter-increment:s;position:relative;padding:8px 0 8px 34px;border-top:1px dashed var(--line)}
+ol.steps>li:first-child{border-top:0}
+ol.steps>li:before{content:counter(s);position:absolute;left:0;top:8px;width:24px;height:24px;border-radius:50%;border:2px solid var(--acc);color:var(--acc);font-size:13px;font-weight:700;display:grid;place-items:center}
+.q{font-weight:700;color:var(--acc)}
+.ready{background:var(--ok);border-left:4px solid var(--acc2);padding:8px 12px;border-radius:8px;margin:10px 0}
+.warn{border-left:4px solid var(--warn);padding:8px 12px;margin:10px 0;border-radius:8px;background:color-mix(in srgb,var(--warn) 10%,transparent)}
+.chk{display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.chk input{width:22px;height:22px;flex:0 0 22px;accent-color:var(--acc2);margin-top:2px}
+.chk .amt{margin-left:auto;font-weight:700;white-space:nowrap;padding-left:8px}
+.btn{appearance:none;border:0;background:var(--acc);color:#fff;font-weight:700;border-radius:999px;padding:10px 16px;font-size:15px;margin:6px 6px 0 0;cursor:pointer}
+.btn.ghost{background:transparent;border:2px solid var(--acc2);color:var(--acc2)}
+.tl td:first-child{font-weight:700;white-space:nowrap}
+#timer{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:12px 20px;border-radius:999px;font-size:20px;font-weight:700;display:none;box-shadow:0 6px 20px #0005;z-index:9}
+#timer.ring{background:var(--warn);color:#fff;animation:p .6s infinite alternate}
+@keyframes p{to{transform:translateX(-50%) scale(1.08)}}
+#timer small{font-size:13px;font-weight:500;margin-right:8px}
+#timer button{margin-left:10px;background:none;border:0;color:inherit;font-size:18px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>🥗 Ужин: ларб + рис</h1>
+<p class="sub">+ 🍗 маринад бёдер на завтра. Всего ~35 мин. Нажимай на таймеры, отмечай шаги.</p>
+
+<div class="card">
+<table>
+<tr><th></th><th>Кирилл</th><th>Кристина</th></tr>
+<tr><td>Рис готовый</td><td>¾ стакана (150 г)</td><td>⅔ стакана (130 г)</td></tr>
+<tr><td>Ларб</td><td>60% сковороды</td><td>40% сковороды</td></tr>
+<tr><td>Ккал / белок</td><td>~680 / 60 г</td><td>~490 / 40 г</td></tr>
+</table>
+</div>
+
+<div class="card">
+<div class="hd"><div class="num">✓</div><h2>Достань всё на стол</h2></div>
+<p class="sub" style="margin:0 0 6px">«Стакан» = одна и та же кружка для риса и воды. ст.л. = столовая ложка, ч.л. = чайная.</p>
+<div id="ing"></div>
+<p class="sub" style="margin:10px 0 0"><b>Посуда:</b> кастрюля 1 л с крышкой, сковорода, лопатка, нож, доска, 3 миски, чашка, ложки, обычный пакет, кружка, вилка.</p>
+</div>
+
+<div class="card" data-s="1">
+<div class="hd"><div class="num">1</div><h2>Рис</h2><span class="time">5 мин руками + 25 сам</span></div>
+<div class="take"><b>Возьми:</b><ul><li><b>1 стакан</b> сухого риса Hom Mali</li><li><b>1¼ стакана</b> воды (тем же стаканом)</li><li>кастрюля 1 л с крышкой</li></ul></div>
+<ol class="steps">
+<li>Насыпь <span class="q">1 стакан риса</span> в кастрюлю.</li>
+<li>Налей воды из-под крана, чтобы рис был покрыт. Поболтай рукой <span class="q">10 секунд</span>: вода станет мутно-белой.</li>
+<li>Слей воду, придерживая рис ладонью. <span class="q">Повтори 2–3 раза</span>, пока вода не станет почти прозрачной.</li>
+<li>Слей всю воду. Налей <span class="q">1¼ стакана</span> чистой воды. Проверка: опусти палец кончиком до риса, вода должна доходить <b>до первого сгиба пальца</b> (~2 см).</li>
+<li>Плита: <span class="q">сильный огонь, БЕЗ крышки</span>. Не мешай. Жди ~5 минут.</li>
+<li>Когда вода уйдёт до уровня риса и на поверхности появятся <b>маленькие дырочки, из которых идёт пар</b> → накрой <b>крышкой</b> → огонь <span class="q">на минимум</span> → таймер:<br><button class="btn" onclick="T(15,'Рис: выключить огонь')">⏱ 15 мин</button></li>
+<li>Крышку <b>не открывай</b>. Пока ждёшь, переходи к шагам 2 и 3.</li>
+<li>Таймер прозвенел → <b>выключи огонь</b> → <span class="q">ещё 10 минут не открывай</span>:<br><button class="btn" onclick="T(10,'Рис готов: взрыхлить')">⏱ 10 мин</button></li>
+<li>Открой и взрыхли вилкой.</li>
+</ol>
+<div class="ready">✅ Готово: зёрна мягкие, целые, на дне нет воды.</div>
+<table><tr><th>Если</th><th>То</th></tr>
+<tr><td>Твёрдый</td><td>2–3 ст.л. воды, крышка, 5 мин на минимуме</td></tr>
+<tr><td>Убегает пена</td><td>Сдвинь крышку на этапе кипения</td></tr>
+<tr><td>Пригорело дно</td><td>Бери сверху, дно не скреби</td></tr></table>
+<button class="btn ghost" onclick="D(this)">Шаг сделан</button>
+</div>
+
+<div class="card" data-s="2">
+<div class="hd"><div class="num">2</div><h2>Нарезка (пока варится рис)</h2><span class="time">7 мин</span></div>
+<div class="warn">Сначала режем <b>всю зелень</b>. Сырую курицу режем на доске <b>последней</b>.</div>
+<p>Поставь 3 ёмкости: <b>миска «ЛАРБ»</b>, <b>миска «МАРИНАД»</b>, <b>чашка «ЛАЙМ»</b>.</p>
+<ol class="steps">
+<li><b>Шалот: <span class="q">3 штуки</span></b>. Срежь оба кончика, сними шелуху, разрежь вдоль пополам, режь <b>тонкими полукольцами</b>. → миска <b>ЛАРБ</b>.</li>
+<li><b>Зелёный лук: <span class="q">3 стебля</span></b>. Помой, отрежь белые корешки, режь колечками по 5 мм. → миска <b>ЛАРБ</b>.</li>
+<li><b>Мята: <span class="q">весь пучок</span></b>. Помой, оборви только <b>листья</b>, крупные порви пополам, стебли выброси. → миска <b>ЛАРБ</b>. Нужна примерно <b>1 полная горсть</b> листьев.</li>
+<li><b>Кинза: <span class="q">весь пучок</span></b>. Помой. <b>Листья</b> оборви (~½ горсти) → миска <b>ЛАРБ</b>. <b>Стебли с корешками</b> оставь на доске.</li>
+<li><b>Стебли кинзы</b> руби <b>очень мелко</b>, почти в кашу. → миска <b>МАРИНАД</b>.</li>
+<li><b>Чеснок: <span class="q">6 зубчиков</span></b>. Прижми каждый плоской стороной ножа и надави ладонью, шелуха снимется. Руби <b>очень мелко</b>. → миска <b>МАРИНАД</b>.</li>
+<li><b>Лаймы: <span class="q">3 штуки</span></b>. Покатай каждый по столу с нажимом. Разрежь поперёк пополам и выжми через пальцы, косточки останутся в ладони. Нужно <span class="q">3 ст.л. сока</span>. → чашка <b>ЛАЙМ</b>.</li>
+<li><b>Огурцы: <span class="q">2 шт</span></b> брусочками, <b>капуста: <span class="q">¼ кочана</span></b> дольками → на тарелку для подачи.</li>
+</ol>
+<button class="btn ghost" onclick="D(this)">Шаг сделан</button>
+</div>
+
+<div class="card" data-s="3">
+<div class="hd"><div class="num">3</div><h2>Маринад бёдер на завтра</h2><span class="time">8 мин</span></div>
+<div class="take"><b>Возьми (на ~1 кг бёдер):</b><ul>
+<li>миска МАРИНАД (чеснок + стебли кинзы)</li>
+<li>рыбный соус น้ำปลา: <b>2 ст.л.</b></li>
+<li>соевый соус: <b>1 ст.л.</b></li>
+<li>устричный соус: <b>1 ст.л.</b> (вместо сахара)</li>
+<li>тёмный соевый: <b>1 ч.л.</b> (для цвета)</li>
+<li>белый перец: <b>1 ч.л.</b></li>
+<li>масло: <b>1 ч.л.</b></li>
+<li>бёдра: <b>~1 кг</b>, обычный пакет</li></ul></div>
+<ol class="steps">
+<li>В миску МАРИНАД добавь: <span class="q">2 ст.л.</span> рыбного соуса, <span class="q">1 ст.л.</span> соевого, <span class="q">1 ст.л.</span> устричного, <span class="q">1 ч.л.</span> тёмного соевого, <span class="q">1 ч.л.</span> белого перца, <span class="q">1 ч.л.</span> масла. Перемешай ложкой.</li>
+<li>Выложи бёдра на доску. <b>Без кожи и кости</b>: толстые места надрежь вдоль и раскрой книжкой, чтобы везде было ~1,5 см.<br><b>С кожей</b>: подцепи кожу пальцами и стяни, плёнки подрезай ножом (минус ~100 ккал на кусок).<br><b>С костью</b>: сделай 2–3 надреза до кости с каждой стороны.<br>Жёлтый жир по краям срежь.</li>
+<li>Пакет <b>поставь в пустую миску</b> и отогни края наружу, чтобы он стоял.</li>
+<li>Положи бёдра в пакет и вылей сверху весь маринад.</li>
+<li>Выдави воздух, <b>завяжи узлом</b>. Мни через пакет <span class="q">1 минуту</span>, чтобы маринад покрыл каждый кусок.</li>
+<li>Убери в холодильник <b>прямо в миске</b> на <b>нижнюю полку</b>. Маринуй <span class="q">минимум 4 ч, лучше ночь, максимум 24 ч</span>.</li>
+</ol>
+<div class="warn">🧼 <b>Обязательно:</b> помой руки, доску, нож и ложку <b>горячей водой с мылом</b>. Только потом готовь ларб.</div>
+<button class="btn ghost" onclick="D(this)">Шаг сделан</button>
+</div>
+
+<div class="card" data-s="4">
+<div class="hd"><div class="num">4</div><h2>Поджаренный рис (кхао кхуа)</h2><span class="time">7 мин</span></div>
+<p class="sub" style="margin-top:0">Купил готовый ข้าวคั่ว? Пропусти шаг и возьми из пачки <b>2 ст.л.</b></p>
+<div class="take"><b>Возьми:</b><ul><li>сырой рис: <b>2 ст.л.</b> (НЕ промывать)</li><li>сухая сковорода, без масла</li><li>пакет, бутылка или кружка</li></ul></div>
+<ol class="steps">
+<li>Сковорода <b>без масла</b>, огонь <span class="q">средний</span>.</li>
+<li>Насыпь <span class="q">2 ст.л. сырого риса</span>.</li>
+<li>Мешай лопаткой <b>без остановки</b> <span class="q">5–7 минут</span>.<br><button class="btn" onclick="T(6,'Кхао кхуа: проверь цвет')">⏱ 6 мин</button></li>
+<li>Высыпь на тарелку и остуди <span class="q">2 минуты</span>.</li>
+<li>Пересыпь в пакет и дави, катая по нему бутылкой или кружкой, <span class="q">1–2 минуты</span>. Получится крупная крошка, как песок с крупинками.</li>
+</ol>
+<div class="ready">✅ Готово: зёрна цвета <b>арахиса</b>, пахнет попкорном. Почернели — выброси и сделай заново на меньшем огне.</div>
+<button class="btn ghost" onclick="D(this)">Шаг сделан</button>
+</div>
+
+<div class="card" data-s="5">
+<div class="hd"><div class="num">5</div><h2>Ларб</h2><span class="time">8 мин</span></div>
+<div class="take"><b>Возьми:</b><ul>
+<li>фарш: <b>~500 г</b> (весь, что остался)</li>
+<li>вода: <b>3 ст.л.</b></li>
+<li>рыбный соус: <b>2 ст.л.</b></li>
+<li>чашка ЛАЙМ: <b>3 ст.л.</b> сока</li>
+<li>чили-хлопья: <b>½ ч.л.</b> (+ запас)</li>
+<li>кхао кхуа: <b>2 ст.л.</b></li>
+<li>миска ЛАРБ (шалот, лук, мята, кинза)</li></ul></div>
+<ol class="steps">
+<li>Сковорода, огонь <span class="q">средний</span>, налей <span class="q">3 ст.л. воды</span>, масло не нужно.</li>
+<li>Вода закипела → выложи <b>весь фарш</b>.</li>
+<li><b>Сразу</b> разбивай его ребром лопатки на мелкие крошки, как гречка, без комков.</li>
+<li>Мешай <span class="q">5–6 минут</span>.<br><button class="btn" onclick="T(6,'Фарш: проверь, нет ли розового')">⏱ 6 мин</button></li>
+<li>Проверь: <b>ни капли розового</b>, весь фарш белый (свиной — серый). Сок в сковороде <b>не сливай</b>.</li>
+<li><b>ВЫКЛЮЧИ ОГОНЬ.</b></li>
+<li>Добавляй по одному и перемешивай после каждого:<br>① <span class="q">2 ст.л.</span> рыбного соуса<br>② <span class="q">3 ст.л.</span> сока лайма<br>③ <span class="q">½ ч.л.</span> чили-хлопьев<br>④ шалот из миски ЛАРБ (выбери его руками)<br>⑤ <span class="q">2 ст.л.</span> кхао кхуа</li>
+<li><b>Попробуй ложкой.</b> Должно быть кисло, солёно и остро одновременно (поправки в таблице ниже).</li>
+<li>В самом конце высыпи <b>остаток миски ЛАРБ</b>: мяту, кинзу и зелёный лук. Перемешай <span class="q">2–3 раза</span>, аккуратно.</li>
+</ol>
+<table><tr><th>На вкус</th><th>Добавь</th></tr>
+<tr><td>Пресно</td><td>½ ч.л. рыбного соуса</td></tr>
+<tr><td>Пересолено</td><td>сок ½ лайма</td></tr>
+<tr><td>Не кисло</td><td>сок ½ лайма</td></tr>
+<tr><td>Не остро</td><td>¼ ч.л. чили-хлопьев</td></tr>
+<tr><td>Слишком остро</td><td>больше риса и огурца на тарелку</td></tr></table>
+<button class="btn ghost" onclick="D(this)">Шаг сделан</button>
+</div>
+
+<div class="card" data-s="6">
+<div class="hd"><div class="num">6</div><h2>Подача</h2></div>
+<table>
+<tr><th></th><th>Кирилл</th><th>Кристина</th></tr>
+<tr><td>Рис</td><td><b>¾ стакана</b> (150 г)</td><td><b>⅔ стакана</b> (130 г)</td></tr>
+<tr><td>Ларб</td><td><b>60%</b> сковороды</td><td><b>40%</b></td></tr>
+<tr><td>Огурец, капуста</td><td>сколько хочешь</td><td>сколько хочешь</td></tr>
+</table>
+<p>Остаток риса переложи в миску, накрой тарелкой и убери в холодильник. Завтра он пойдёт к гай янгу: разогреть в микроволновке с 1 ст.л. воды 1,5 минуты.</p>
+<button class="btn ghost" onclick="D(this)">Шаг сделан</button>
+</div>
+
+<div class="card">
+<div class="hd"><div class="num">⏱</div><h2>Таймлайн</h2></div>
+<table class="tl">
+<tr><td>0 мин</td><td>Рис: промыть, вода, сильный огонь</td></tr>
+<tr><td>~8</td><td>Рис под крышку, ⏱ 15 мин → нарезка</td></tr>
+<tr><td>~15</td><td>Маринад, бёдра в холодильник</td></tr>
+<tr><td>~22</td><td>🧼 мыть руки и доску</td></tr>
+<tr><td>~23</td><td>Рис выключить, ⏱ 10 мин → кхао кхуа</td></tr>
+<tr><td>~29</td><td>Ларб</td></tr>
+<tr><td>~35</td><td>Подача</td></tr>
+</table>
+</div>
+</div>
+
+<div id="timer"><small id="tl"></small><span id="tt"></span><button onclick="X()">✕</button></div>
+
+<script>
+const ING=[["Рис Hom Mali","1 стакан + 2 ст.л."],["Фарш","~500 г"],["Куриные бёдра","~1 кг"],["Шалот","3 шт"],["Зелёный лук","3 стебля"],["Мята","1 пучок"],["Кинза","1 пучок"],["Лаймы","3 шт"],["Чеснок","6 зубчиков"],["Рыбный соус น้ำปลา","4 ст.л."],["Соевый соус","1 ст.л."],["Устричный соус","1 ст.л."],["Тёмный соевый","1 ч.л."],["Белый перец","1 ч.л."],["Чили-хлопья","½–1 ч.л."],["Масло","1 ч.л."],["Огурцы","2 шт"],["Капуста","¼ кочана"]];
+const K='larb-tonight',S=JSON.parse(localStorage.getItem(K)||'{}'),sv=()=>localStorage.setItem(K,JSON.stringify(S));
+document.getElementById('ing').innerHTML=ING.map((x,i)=>`<label class="chk"><input type="checkbox" data-i="${i}" ${S['i'+i]?'checked':''}><span>${x[0]}</span><span class="amt">${x[1]}</span></label>`).join('');
+document.querySelectorAll('#ing input').forEach(c=>c.onchange=()=>{S['i'+c.dataset.i]=c.checked;sv()});
+document.querySelectorAll('[data-s]').forEach(c=>{if(S['s'+c.dataset.s]){c.classList.add('done');c.querySelector('.ghost').textContent='↺ Вернуть'}});
+function D(b){const c=b.closest('[data-s]'),k='s'+c.dataset.s;S[k]=!S[k];sv();c.classList.toggle('done',S[k]);b.textContent=S[k]?'↺ Вернуть':'Шаг сделан';if(S[k]){const n=c.nextElementSibling;n&&n.scrollIntoView({behavior:'smooth'})}}
+let iv,end,ac;
+function T(m,l){X();end=Date.now()+m*60000;document.getElementById('tl').textContent=l.split(':')[0];const el=document.getElementById('timer');el.style.display='block';el.classList.remove('ring');
+iv=setInterval(()=>{const r=Math.max(0,end-Date.now()),s=Math.ceil(r/1000);document.getElementById('tt').textContent=Math.floor(s/60)+':'+String(s%60).padStart(2,'0');
+if(r<=0){clearInterval(iv);el.classList.add('ring');document.getElementById('tt').textContent=l;beep();navigator.vibrate&&navigator.vibrate([400,200,400,200,400])}},250)}
+function beep(){try{ac=ac||new AudioContext();[0,.4,.8].forEach(t=>{const o=ac.createOscillator(),g=ac.createGain();o.frequency.value=880;o.connect(g);g.connect(ac.destination);g.gain.value=.3;o.start(ac.currentTime+t);o.stop(ac.currentTime+t+.25)})}catch(e){}}
+function X(){clearInterval(iv);document.getElementById('timer').style.display='none'}
+</script>
+</body>
+</html>
